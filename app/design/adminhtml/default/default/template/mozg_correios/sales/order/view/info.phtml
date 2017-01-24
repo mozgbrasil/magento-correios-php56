@@ -1,0 +1,156 @@
+<?php
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+
+<div class="box-right">
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4>Correios SIGEP</h4>
+        </div>
+        <fieldset>
+            <div id="order_correios_block">
+                <div class="order-correios-form" id="order_correios_form">
+                    <span class="field-row">
+                    <label for="largura" class="normal">Largura da embalagem</label>
+                    <input type="text" value="" name="largura" id="largura" class="input-text">
+                    </span>
+                    <span class="field-row">
+                    <label for="comprimento" class="normal">Comprimento da embalagem</label>
+                    <input type="text" value="" name="comprimento" id="comprimento" class="input-text">
+                    </span>
+                    <span class="field-row">
+                    <label for="altura" class="normal">Altura da embalagem</label>
+                    <input type="text" value="" name="altura" id="altura" class="input-text">
+                    </span>
+                    <span class="field-row">
+                        <p class="form-buttons">
+                            <button type="button" class="scalable success" onclick="correios_imprimir_etiqueta()" style=""><span><span><span>Imprimir etiqueta</span></span></span></button>
+                            <button type="button" class="scalable " onclick="correios_debug_imprimir_etiqueta()" style=""><span><span><span>Debug</span></span></span></button>
+                        </p>
+                    </span>
+                    <div class="divider"></div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<?php
+
+$params = $this->getRequest()->getParams();
+$order_id = $params['order_id'];
+
+$url_correios_imprimir_etiqueta = Mage::helper('adminhtml')->getUrl('adminhtml/Correios/imprimir_etiqueta/', array('order_id'=>$order_id));
+
+?>
+
+<script type="text/javascript">
+//<![CDATA[
+
+    url_correios_imprimir_etiqueta = '<?php echo $url_correios_imprimir_etiqueta; ?>';
+
+    function correios_isValid(){
+
+        console.log(arguments.callee.name);
+
+        elementId = 'largura';
+        fieldValue = $(elementId).value;
+        console.log(fieldValue);
+        if (fieldValue == '') {
+            alert('É necessário informar a largura da embalagem.\n\n\nNo histórico do pedido tem o armazenamento dessa informação.');
+            $(elementId).focus();
+            return false;
+        }
+
+        elementId = 'comprimento';
+        fieldValue = $(elementId).value;
+        console.log(fieldValue);
+        if (fieldValue == '') {
+            alert('É necessário informar a comprimento da embalagem.\n\n\nNo histórico do pedido tem o armazenamento dessa informação.');
+            $(elementId).focus();
+            return false;
+        }
+
+        elementId = 'altura';
+        fieldValue = $(elementId).value;
+        console.log(fieldValue);
+        if (fieldValue == '') {
+            alert('É necessário informar a altura da embalagem.\n\n\nNo histórico do pedido tem o armazenamento dessa informação.');
+            $(elementId).focus();
+            return false;
+        }
+
+        return true;
+
+    }
+
+    function correios_http_request(){
+
+        console.log(arguments.callee.name);
+
+        new Ajax.Request( url, {
+            method: 'get',
+            asynchronous: false,
+            parameters: '',
+            onLoading: function(transport) {
+                console.log(arguments.callee.name);
+            },
+            onCreate: function(transport) {
+                console.log(arguments.callee.name);
+            },
+            onComplete: function(transport) {
+                console.log(arguments.callee.name);
+
+                $('ajax-result').innerHTML = '01';
+            }
+        });
+
+    }
+
+    function correios_imprimir_etiqueta(){
+
+        console.log(arguments.callee.name);
+
+        if (!correios_isValid()) {
+            return false;
+        }
+
+        querystring = '';
+        querystring += '&largura=' + $('largura').value;
+        querystring += '&comprimento=' + $('comprimento').value;
+        querystring += '&altura=' + $('altura').value;
+        url = url_correios_imprimir_etiqueta + '?0=0' + querystring;
+        console.log(url);
+        openPopupsMozg(url, 'WinXilinus', 'Link', 'Correios', 'correios');
+    }
+
+    function correios_debug_imprimir_etiqueta(){
+
+        console.log(arguments.callee.name);
+
+        if (!correios_isValid()) {
+            return false;
+        }
+
+        querystring = '';
+        querystring += '&largura=' + $('largura').value;
+        querystring += '&comprimento=' + $('comprimento').value;
+        querystring += '&altura=' + $('altura').value;
+        querystring += '&debug=true';
+        url = url_correios_imprimir_etiqueta + '?0=0' + querystring;
+        console.log(url);
+        openPopupsMozg(url, 'WinXilinus', 'Link', 'Correios', 'correios');
+    }
+
+    
+
+//]]>
+</script>
+
+<div class="clear"></div>
+
+<?php echo $this->getChildHtml(); ?>
